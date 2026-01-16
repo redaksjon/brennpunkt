@@ -87,8 +87,21 @@ const DEFAULT_CONFIG: ProjectConfig = {
 // Coverage Cache (per-project)
 // ============================================================================
 
+const MAX_CACHE_SIZE = 50; // Limit memory usage
 const cacheByProject: Map<string, CacheEntry> = new Map();
 const configCache: Map<string, ConfigCacheEntry> = new Map();
+
+/**
+ * Add to cache with size limit (LRU eviction).
+ */
+function addToCache<T>(cache: Map<string, T>, key: string, value: T): void {
+    // Evict oldest entries if at capacity
+    if (cache.size >= MAX_CACHE_SIZE) {
+        const firstKey = cache.keys().next().value;
+        if (firstKey) cache.delete(firstKey);
+    }
+    cache.set(key, value);
+}
 
 function findCoverageFile(projectPath: string): string | null {
     for (const relativePath of COVERAGE_SEARCH_PATHS) {
@@ -109,7 +122,9 @@ function findCoverageFile(projectPath: string): string | null {
  * Respects the project's configured weights, minLines, coveragePath, etc.
  */
 function loadProjectConfig(projectPath: string): ProjectConfig {
-    const configPath = resolve(projectPath, 'brennpunkt.yaml');
+    // Validate project path first
+    const validatedPath = validateProjectPath(projectPath);
+    const configPath = resolve(validatedPath, 'brennpunkt.yaml');
     
     if (!existsSync(configPath)) {
         return { ...DEFAULT_CONFIG };
@@ -171,15 +186,41 @@ function loadProjectConfig(projectPath: string): ProjectConfig {
         }
     }
     
-    // Cache the config
-    configCache.set(configPath, { config, mtime: stat.mtimeMs });
+    // Cache the config (with size limit)
+    addToCache(configCache, configPath, { config, mtime: stat.mtimeMs });
     
     return config;
 }
 
+/**
+ * Validate that the project path is a real directory and doesn't contain
+ * suspicious path components.
+ */
+function validateProjectPath(projectPath: string): string {
+    // Resolve to absolute path
+    const resolved = resolve(projectPath);
+    
+    // Check for path traversal attempts
+    if (projectPath.includes('..')) {
+        throw new Error('Invalid projectPath: path traversal (..) not allowed');
+    }
+    
+    // Verify it's an existing directory
+    if (!existsSync(resolved)) {
+        throw new Error(`Project path does not exist: ${resolved}`);
+    }
+    
+    const stat = statSync(resolved);
+    if (!stat.isDirectory()) {
+        throw new Error(`Project path is not a directory: ${resolved}`);
+    }
+    
+    return resolved;
+}
+
 function loadCoverage(projectPath: string, config: ProjectConfig): FileCoverage[] {
-    // Resolve the project path to absolute
-    const resolvedProjectPath = resolve(projectPath);
+    // Validate and resolve the project path
+    const resolvedProjectPath = validateProjectPath(projectPath);
     
     // Find coverage file - use config's coveragePath if set, otherwise search
     const path = config.coveragePath 
@@ -210,7 +251,8 @@ function loadCoverage(projectPath: string, config: ProjectConfig): FileCoverage[
     const content = readFileSync(path, 'utf-8');
     const data = parseLcov(content);
     
-    cacheByProject.set(path, {
+    // Cache with size limit
+    addToCache(cacheByProject, path, {
         data,
         mtime: stat.mtimeMs,
         path,

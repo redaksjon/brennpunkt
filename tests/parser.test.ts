@@ -203,4 +203,27 @@ end_of_record`;
         expect(result).toHaveLength(1);
         expect(result[0].file).toBe('src/whitespace.ts');
     });
+
+    it('should handle malformed numeric values gracefully (default to 0)', () => {
+        const lcov = `SF:src/malformed.ts
+LF:invalid
+LH:abc
+FNF:
+FNH:NaN
+BRF:undefined
+BRH:null
+end_of_record`;
+
+        const result = parseLcov(lcov);
+        
+        expect(result).toHaveLength(1);
+        expect(result[0].file).toBe('src/malformed.ts');
+        // All malformed values should default to 0
+        expect(result[0].linesFound).toBe(0);
+        expect(result[0].linesHit).toBe(0);
+        expect(result[0].functionsFound).toBe(0);
+        expect(result[0].functionsHit).toBe(0);
+        expect(result[0].branchesFound).toBe(0);
+        expect(result[0].branchesHit).toBe(0);
+    });
 });
