@@ -1,0 +1,77 @@
+{
+  "name": "@redaksjon/brennpunkt",
+  "version": "0.0.1",
+  "description": "Coverage priority analyzer - identify where to focus testing efforts",
+  "main": "dist/index.js",
+  "type": "module",
+  "bin": {
+    "brennpunkt": "./dist/main.js",
+    "brennpunkt-mcp": "./dist/mcp/server.js"
+  },
+  "files": [
+    "dist",
+    "guide",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": "./dist/index.js",
+    "./mcp": "./dist/mcp/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/redaksjon/brennpunkt.git"
+  },
+  "homepage": "https://github.com/redaksjon/brennpunkt",
+  "scripts": {
+    "build": "npm run lint && tsc --noEmit && vite build && chmod +x dist/main.js dist/mcp/server.js",
+    "dev": "vite",
+    "watch": "vite build --watch",
+    "test": "vitest run --coverage",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "clean": "rm -rf dist",
+    "precommit": "npm run lint && npm run test",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "keywords": [
+    "coverage",
+    "testing",
+    "lcov",
+    "analysis",
+    "priority",
+    "mcp",
+    "ai",
+    "cursor",
+    "claude",
+    "agentic"
+  ],
+  "author": "Tim O'Brien <tobrien@discursive.com>",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.25.2",
+    "commander": "^14.0.2",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.39.1",
+    "@rollup/plugin-replace": "^6.0.3",
+    "@swc/core": "^1.15.1",
+    "@types/node": "^24.10.1",
+    "@typescript-eslint/eslint-plugin": "^8.46.4",
+    "@typescript-eslint/parser": "^8.46.4",
+    "@vitest/coverage-v8": "^4.0.8",
+    "eslint": "^9.39.1",
+    "eslint-plugin-import": "^2.32.0",
+    "globals": "^17.0.0",
+    "rollup-plugin-preserve-shebang": "^1.0.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.2",
+    "vite-plugin-node": "^7.0.0",
+    "vitest": "^4.0.8"
+  }
+}

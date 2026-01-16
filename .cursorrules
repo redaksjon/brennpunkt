@@ -1,0 +1,70 @@
+# Brennpunkt Project Rules
+
+## Project Overview
+
+Brennpunkt is a coverage priority analyzer that parses lcov.info files and ranks files by testing priority. It helps developers identify where to focus testing efforts for maximum impact.
+
+## Core Principles
+
+1. **LCOV Compatibility**: Brennpunkt works with ANY test framework that produces lcov.info format (Jest, Vitest, Mocha, c8, NYC, Karma, AVA, Playwright, etc.)
+
+2. **Read-Only Analysis**: Brennpunkt reads existing coverage data. It never runs tests itself.
+
+3. **Actionable Output**: Priority scores should always include context and suggestions, not just percentages.
+
+## Documentation Requirements
+
+### Keep the Guide Updated
+
+**IMPORTANT**: When making changes to Brennpunkt's features, CLI options, configuration, or behavior, you MUST also update the relevant documentation in the `guide/` directory.
+
+The `guide/` directory contains documentation designed for AI assistants and is shipped with the npm package. It must stay in sync with the codebase.
+
+| File | Purpose | Update When |
+|------|---------|-------------|
+| `guide/index.md` | Overview and quick reference | New features, command changes |
+| `guide/quickstart.md` | Getting started | Installation or basic usage changes |
+| `guide/usage.md` | CLI reference | CLI options added/changed |
+| `guide/configuration.md` | Config file options | Config options added/changed |
+| `guide/scoring.md` | Priority algorithm | Scoring formula changes |
+| `guide/integration.md` | CI/CD integration | New integration patterns |
+| `guide/ai-integration.md` | AI/MCP integration | AI features, MCP changes |
+| `guide/api.md` | Programmatic API | Public API changes |
+
+### Also Update
+
+- `README.md` - Main project documentation
+- `docs/src/App.jsx` - Project website content (if significant feature)
+
+## Code Style
+
+- TypeScript with strict mode
+- ES Modules (type: "module")
+- Node.js 24+ required
+- Use `node:` prefix for built-in modules
+- Externalize dependencies in Vite build
+
+## Testing
+
+- Tests in `tests/` directory using Vitest
+- Coverage thresholds: 80% lines, 80% statements, 65% branches, 85% functions
+- Test file naming: `*.test.ts`
+
+## MCP Server (Future Feature)
+
+The MCP server code is in `src/mcp/server.ts` but is currently excluded from the build pending MCP SDK integration. When implementing MCP features:
+
+1. The `projectPath` must be a parameter to each tool call (not server config)
+2. Automatically load project's `brennpunkt.yaml` if present
+3. Include `configUsed` field in responses
+4. Tool descriptions should explicitly state lcov compatibility and that tests are not run
+
+## Key Files
+
+- `src/main.ts` - CLI entry point
+- `src/parser.ts` - LCOV file parser
+- `src/analyzer.ts` - Coverage analysis and scoring
+- `src/formatter.ts` - Output formatting (table/JSON)
+- `src/types.ts` - TypeScript type definitions
+- `src/index.ts` - Public API exports
+- `brennpunkt.yaml` - Default config file name
