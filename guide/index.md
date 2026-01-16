@@ -100,7 +100,7 @@ If you're an AI helping someone improve test coverage:
 4. **Use JSON output**: Parse the structured data for precise guidance
 5. **Respect project config**: Projects may have custom `brennpunkt.yaml` with different weights
 
-> **MCP Server**: Run `brennpunkt-mcp` to start an MCP server that allows AI tools to query coverage data directly without running tests. See [AI Integration](./ai-integration.md) for details.
+> **MCP Server**: Use `npx -p @redaksjon/brennpunkt brennpunkt-mcp` to start an MCP server that allows AI tools to query coverage data directly without running tests. See [AI Integration](./ai-integration.md) for details.
 
 ### Cursor Rule (Recommended)
 
