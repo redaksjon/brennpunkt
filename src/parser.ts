@@ -39,17 +39,23 @@ export function parseLcov(content: string): LcovFileData[] {
             };
         } else if (current) {
             if (trimmed.startsWith('LF:')) {
-                current.linesFound = parseInt(trimmed.slice(3), 10);
+                const val = parseInt(trimmed.slice(3), 10);
+                current.linesFound = isNaN(val) ? 0 : val;
             } else if (trimmed.startsWith('LH:')) {
-                current.linesHit = parseInt(trimmed.slice(3), 10);
+                const val = parseInt(trimmed.slice(3), 10);
+                current.linesHit = isNaN(val) ? 0 : val;
             } else if (trimmed.startsWith('FNF:')) {
-                current.functionsFound = parseInt(trimmed.slice(4), 10);
+                const val = parseInt(trimmed.slice(4), 10);
+                current.functionsFound = isNaN(val) ? 0 : val;
             } else if (trimmed.startsWith('FNH:')) {
-                current.functionsHit = parseInt(trimmed.slice(4), 10);
+                const val = parseInt(trimmed.slice(4), 10);
+                current.functionsHit = isNaN(val) ? 0 : val;
             } else if (trimmed.startsWith('BRF:')) {
-                current.branchesFound = parseInt(trimmed.slice(4), 10);
+                const val = parseInt(trimmed.slice(4), 10);
+                current.branchesFound = isNaN(val) ? 0 : val;
             } else if (trimmed.startsWith('BRH:')) {
-                current.branchesHit = parseInt(trimmed.slice(4), 10);
+                const val = parseInt(trimmed.slice(4), 10);
+                current.branchesHit = isNaN(val) ? 0 : val;
             } else if (trimmed === 'end_of_record') {
                 files.push(current);
                 current = null;
