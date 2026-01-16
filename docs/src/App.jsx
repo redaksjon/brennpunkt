@@ -679,7 +679,8 @@ top: 20`}</pre>
                                     const code = `{
   "mcpServers": {
     "brennpunkt": {
-      "command": "brennpunkt-mcp"
+      "command": "npx",
+      "args": ["-y", "-p", "@redaksjon/brennpunkt", "brennpunkt-mcp"]
     }
   }
 }`;
@@ -692,7 +693,8 @@ top: 20`}</pre>
 {
   "mcpServers": {
     "brennpunkt": {
-      "command": "brennpunkt-mcp"
+      "command": "npx",
+      "args": ["-y", "-p", "@redaksjon/brennpunkt", "brennpunkt-mcp"]
     }
   }
 }`}</pre>

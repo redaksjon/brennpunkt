@@ -131,26 +131,26 @@ npm install -g @redaksjon/brennpunkt
 
 #### 2. Configure MCP Client (One-Time Setup)
 
-For **Cursor**, add to your MCP configuration:
-
-```json
-{
-  "mcpServers": {
-    "brennpunkt": {
-      "command": "brennpunkt-mcp"
-    }
-  }
-}
-```
-
-For **Claude Desktop**, add to `claude_desktop_config.json`:
+Add to your MCP configuration (**Cursor** or **Claude Desktop**):
 
 ```json
 {
   "mcpServers": {
     "brennpunkt": {
       "command": "npx",
-      "args": ["@redaksjon/brennpunkt-mcp"]
+      "args": ["-y", "-p", "@redaksjon/brennpunkt", "brennpunkt-mcp"]
+    }
+  }
+}
+```
+
+Or if installed globally (`npm install -g @redaksjon/brennpunkt`):
+
+```json
+{
+  "mcpServers": {
+    "brennpunkt": {
+      "command": "brennpunkt-mcp"
     }
   }
 }

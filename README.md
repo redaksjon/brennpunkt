@@ -488,6 +488,19 @@ For deeper integration, Brennpunkt runs as an MCP (Model Context Protocol) serve
 {
   "mcpServers": {
     "brennpunkt": {
+      "command": "npx",
+      "args": ["-y", "-p", "@redaksjon/brennpunkt", "brennpunkt-mcp"]
+    }
+  }
+}
+```
+
+Or if installed globally (`npm install -g @redaksjon/brennpunkt`):
+
+```json
+{
+  "mcpServers": {
+    "brennpunkt": {
       "command": "brennpunkt-mcp"
     }
   }
