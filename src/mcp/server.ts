@@ -12,6 +12,10 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import {
     CallToolRequestSchema,
     ListToolsRequestSchema,
+    ListResourcesRequestSchema,
+    ReadResourceRequestSchema,
+    ListPromptsRequestSchema,
+    GetPromptRequestSchema,
     type Tool,
 } from '@modelcontextprotocol/sdk/types.js';
 import { readFileSync, existsSync, statSync } from 'node:fs';
@@ -687,7 +691,7 @@ async function main() {
     const server = new Server(
         {
             name: 'brennpunkt',
-            version: '0.0.1',
+            version: '0.1.0',
             // Server-level description for AI tools discovering this MCP server
             description: 
                 'Test coverage priority analyzer. Reads lcov.info coverage data (produced by Jest, Vitest, Mocha, c8, NYC, Karma, Playwright, or any lcov-compatible tool) and ranks files by testing priority. ' +
@@ -697,6 +701,13 @@ async function main() {
         {
             capabilities: {
                 tools: {},
+                resources: {
+                    subscribe: false,
+                    listChanged: false,
+                },
+                prompts: {
+                    listChanged: false,
+                },
             },
         }
     );
