@@ -482,6 +482,29 @@ For deeper integration, Brennpunkt runs as an MCP (Model Context Protocol) serve
 | `brennpunkt_get_file_coverage` | Detailed coverage for a specific file |
 | `brennpunkt_estimate_impact` | "If I test these files, will I hit 90%?" |
 
+**Available MCP Resources (NEW):**
+
+| Resource URI | Purpose |
+|--------------|---------|
+| `brennpunkt://coverage/{projectPath}` | Full coverage data as JSON for analysis |
+| `brennpunkt://file/{projectPath}/{filePath}` | Detailed single-file coverage |
+| `brennpunkt://priorities?project={path}&top={n}` | Pre-ranked priority list |
+| `brennpunkt://config/{projectPath}` | Project configuration (yaml or defaults) |
+| `brennpunkt://quick-wins?project={path}` | Small files with high impact |
+
+Resources allow AI assistants to read coverage data directly without tool calls, enabling complex analysis like "Compare branch coverage across all auth files" and parallel data access.
+
+**Available MCP Prompts (NEW):**
+
+| Prompt | Purpose | Key Arguments |
+|--------|---------|---------------|
+| `improve_coverage` | Complete workflow to reach target percentage | projectPath, targetPercentage, focusMetric |
+| `analyze_gaps` | Understand patterns in coverage gaps | projectPath, targetPercentage |
+| `quick_wins_workflow` | Find fast paths to improvement | projectPath, timeConstraint |
+| `coverage_review` | Detailed review with test suggestions | projectPath, filePattern |
+
+Prompts transform brennpunkt from a data provider to a coverage improvement partner, guiding you through actionable workflows instead of just showing numbers.
+
 **One-Time Setup (works for all projects):**
 
 ```json
