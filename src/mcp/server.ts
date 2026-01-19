@@ -12,6 +12,10 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import {
     CallToolRequestSchema,
     ListToolsRequestSchema,
+    ListResourcesRequestSchema,
+    ReadResourceRequestSchema,
+    ListPromptsRequestSchema,
+    GetPromptRequestSchema,
     type Tool,
 } from '@modelcontextprotocol/sdk/types.js';
 import { readFileSync, existsSync, statSync } from 'node:fs';
@@ -19,6 +23,8 @@ import { resolve } from 'node:path';
 import { parseLcov } from '../parser.js';
 import { analyzeFile, calculateOverallCoverage } from '../analyzer.js';
 import type { FileCoverage, PriorityWeights } from '../types.js';
+import * as Resources from './resources.js';
+import * as Prompts from './prompts.js';
 
 // ============================================================================
 // Types
@@ -30,7 +36,7 @@ interface CacheEntry {
     path: string;
 }
 
-interface ProjectConfig {
+export interface ProjectConfig {
     coveragePath?: string;
     weights?: PriorityWeights;
     minLines?: number;
@@ -42,7 +48,7 @@ interface ConfigCacheEntry {
     mtime: number;
 }
 
-interface PriorityResult {
+export interface PriorityResult {
     file: string;
     priorityScore: number;
     coverage: {
@@ -72,13 +78,13 @@ const COVERAGE_SEARCH_PATHS = [
     'test-results/lcov.info',
 ];
 
-const DEFAULT_WEIGHTS: PriorityWeights = {
+export const DEFAULT_WEIGHTS: PriorityWeights = {
     branches: 0.5,
     functions: 0.3,
     lines: 0.2,
 };
 
-const DEFAULT_CONFIG: ProjectConfig = {
+export const DEFAULT_CONFIG: ProjectConfig = {
     weights: DEFAULT_WEIGHTS,
     minLines: 10,
 };
@@ -121,7 +127,7 @@ function findCoverageFile(projectPath: string): string | null {
  * Load project configuration from brennpunkt.yaml if it exists.
  * Respects the project's configured weights, minLines, coveragePath, etc.
  */
-function loadProjectConfig(projectPath: string): ProjectConfig {
+export function loadProjectConfig(projectPath: string): ProjectConfig {
     // Validate project path first
     const validatedPath = validateProjectPath(projectPath);
     const configPath = resolve(validatedPath, 'brennpunkt.yaml');
@@ -196,7 +202,7 @@ function loadProjectConfig(projectPath: string): ProjectConfig {
  * Validate that the project path is a real directory and doesn't contain
  * suspicious path components.
  */
-function validateProjectPath(projectPath: string): string {
+export function validateProjectPath(projectPath: string): string {
     // Resolve to absolute path
     const resolved = resolve(projectPath);
     
@@ -218,7 +224,7 @@ function validateProjectPath(projectPath: string): string {
     return resolved;
 }
 
-function loadCoverage(projectPath: string, config: ProjectConfig): FileCoverage[] {
+export function loadCoverage(projectPath: string, config: ProjectConfig): FileCoverage[] {
     // Validate and resolve the project path
     const resolvedProjectPath = validateProjectPath(projectPath);
     
@@ -295,7 +301,7 @@ function generateReason(file: FileCoverage): string {
     return issues.join('. ') + '.';
 }
 
-function generateSuggestedFocus(file: FileCoverage): string {
+export function generateSuggestedFocus(file: FileCoverage): string {
     const branchCov = file.branchesFound > 0 
         ? (file.branchesHit / file.branchesFound) * 100 
         : 100;
@@ -312,7 +318,7 @@ function generateSuggestedFocus(file: FileCoverage): string {
     return 'Improve general test coverage across the file.';
 }
 
-function getPriorities(
+export function getPriorities(
     files: FileCoverage[],
     top: number = 5,
     minLines: number = 10,
@@ -687,7 +693,7 @@ async function main() {
     const server = new Server(
         {
             name: 'brennpunkt',
-            version: '0.0.1',
+            version: '0.1.0',
             // Server-level description for AI tools discovering this MCP server
             description: 
                 'Test coverage priority analyzer. Reads lcov.info coverage data (produced by Jest, Vitest, Mocha, c8, NYC, Karma, Playwright, or any lcov-compatible tool) and ranks files by testing priority. ' +
@@ -697,6 +703,13 @@ async function main() {
         {
             capabilities: {
                 tools: {},
+                resources: {
+                    subscribe: false,
+                    listChanged: false,
+                },
+                prompts: {
+                    listChanged: false,
+                },
             },
         }
     );
@@ -742,6 +755,39 @@ async function main() {
                 content: [{ type: 'text', text: `Error: ${message}` }],
                 isError: true,
             };
+        }
+    });
+
+    // List resources
+    server.setRequestHandler(ListResourcesRequestSchema, async () => {
+        return Resources.handleListResources();
+    });
+
+    // Read resource
+    server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
+        const { uri } = request.params;
+        try {
+            const contents = await Resources.handleReadResource(uri);
+            return { contents: [contents] };
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            throw new Error(`Failed to read resource ${uri}: ${message}`);
+        }
+    });
+
+    // List prompts
+    server.setRequestHandler(ListPromptsRequestSchema, async () => {
+        return Prompts.handleListPrompts();
+    });
+
+    // Get prompt
+    server.setRequestHandler(GetPromptRequestSchema, async (request) => {
+        const { name, arguments: args } = request.params;
+        try {
+            return Prompts.handleGetPrompt(name, args || {});
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            throw new Error(`Failed to get prompt ${name}: ${message}`);
         }
     });
 
