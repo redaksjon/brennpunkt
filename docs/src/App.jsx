@@ -645,11 +645,13 @@ top: 20`}</pre>
                     </div>
                     
                     <div className="mcp-tools">
-                        <h3>Available MCP Tools</h3>
+                        <h3>MCP Capabilities</h3>
                         <p className="mcp-tools-intro">
-                            Each tool reads EXISTING coverage data (lcov.info) — it does NOT run tests.
-                            Works with any test framework that produces lcov format.
+                            Brennpunkt is a full-featured MCP server with <strong>Tools</strong>, <strong>Resources</strong>, and <strong>Prompts</strong>.
+                            All capabilities read EXISTING coverage data (lcov.info) — never run tests.
                         </p>
+                        
+                        <h4 style={{marginTop: '2rem', marginBottom: '1rem'}}>4 MCP Tools</h4>
                         <div className="mcp-tools-grid">
                             <div className="mcp-tool-card">
                                 <code>brennpunkt_get_priorities</code>
@@ -666,6 +668,22 @@ top: 20`}</pre>
                             <div className="mcp-tool-card">
                                 <code>brennpunkt_estimate_impact</code>
                                 <p>"If I test these files, will I hit 90%?" Estimate improvement if specific files are fully tested. Perfect for planning.</p>
+                            </div>
+                        </div>
+                        
+                        <div style={{marginTop: '3rem'}}>
+                            <h4 style={{marginBottom: '1rem'}}>5 MCP Resources <span className="badge" style={{fontSize: '0.7em', padding: '0.2em 0.5em'}}>NEW</span></h4>
+                            <p style={{marginBottom: '1rem'}}>Direct access to coverage data without tool calls. Enables complex analysis and parallel data fetching.</p>
+                            <div className="mcp-features-compact">
+                                <span>Coverage Reports</span> • <span>File Details</span> • <span>Priority Lists</span> • <span>Configuration</span> • <span>Quick Wins</span>
+                            </div>
+                        </div>
+                        
+                        <div style={{marginTop: '3rem'}}>
+                            <h4 style={{marginBottom: '1rem'}}>4 MCP Prompts <span className="badge" style={{fontSize: '0.7em', padding: '0.2em 0.5em'}}>NEW</span></h4>
+                            <p style={{marginBottom: '1rem'}}>Workflow templates that guide coverage improvement step-by-step.</p>
+                            <div className="mcp-features-compact">
+                                <span>improve_coverage</span> • <span>analyze_gaps</span> • <span>quick_wins_workflow</span> • <span>coverage_review</span>
                             </div>
                         </div>
                     </div>
