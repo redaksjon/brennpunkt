@@ -5,7 +5,7 @@
  */
 
 import type { McpPrompt, McpPromptMessage } from './types';
-import { buildCoverageUri, buildPrioritiesUri, buildQuickWinsUri, buildFileUri } from './uri';
+import { buildCoverageUri, buildPrioritiesUri, buildQuickWinsUri } from './uri';
 
 export const prompts: McpPrompt[] = [
     {

@@ -7,7 +7,7 @@
 
 import type { McpResource, McpResourceTemplate, McpResourceContents } from './types';
 import { parseUri, buildCoverageUri, buildFileUri, buildPrioritiesUri, buildConfigUri, buildQuickWinsUri } from './uri';
-import { loadProjectConfig, loadCoverage, getPriorities, generateSuggestedFocus, DEFAULT_WEIGHTS, type ProjectConfig, type PriorityResult } from './server.js';
+import { loadProjectConfig, loadCoverage, getPriorities, generateSuggestedFocus, DEFAULT_WEIGHTS } from './server.js';
 import { calculateOverallCoverage } from '../analyzer.js';
 import { resolve } from 'node:path';
 import { existsSync } from 'node:fs';
