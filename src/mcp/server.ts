@@ -24,6 +24,7 @@ import { parseLcov } from '../parser.js';
 import { analyzeFile, calculateOverallCoverage } from '../analyzer.js';
 import type { FileCoverage, PriorityWeights } from '../types.js';
 import * as Resources from './resources.js';
+import * as Prompts from './prompts.js';
 
 // ============================================================================
 // Types
@@ -771,6 +772,22 @@ async function main() {
         } catch (error) {
             const message = error instanceof Error ? error.message : String(error);
             throw new Error(`Failed to read resource ${uri}: ${message}`);
+        }
+    });
+
+    // List prompts
+    server.setRequestHandler(ListPromptsRequestSchema, async () => {
+        return Prompts.handleListPrompts();
+    });
+
+    // Get prompt
+    server.setRequestHandler(GetPromptRequestSchema, async (request) => {
+        const { name, arguments: args } = request.params;
+        try {
+            return Prompts.handleGetPrompt(name, args || {});
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            throw new Error(`Failed to get prompt ${name}: ${message}`);
         }
     });
 
