@@ -121,6 +121,48 @@ All tools read EXISTING coverage data (lcov.info) — they do NOT run tests.
 | `brennpunkt_get_file_coverage` | Detailed coverage for a specific file |
 | `brennpunkt_estimate_impact` | "If I test these files, will I hit 90%?" |
 
+### Available MCP Resources (NEW in v0.1.0)
+
+Resources provide direct access to coverage data without tool calls, enabling AI assistants to read and analyze data more efficiently.
+
+| Resource URI | Purpose |
+|--------------|---------|
+| `brennpunkt://coverage/{projectPath}` | Full coverage data as JSON for complex analysis |
+| `brennpunkt://file/{projectPath}/{filePath}` | Detailed single-file coverage |
+| `brennpunkt://priorities?project={path}&top={n}` | Pre-ranked priority list with filtering |
+| `brennpunkt://config/{projectPath}` | Project configuration (yaml or defaults) |
+| `brennpunkt://quick-wins?project={path}` | Small files with high impact potential |
+
+**Why Resources?** Resources allow AI to:
+- Read coverage data once and reason about it multiple times
+- Perform complex analysis like "Compare branch coverage across all auth files"
+- Access cacheable datasets that change infrequently
+- Fetch multiple resources in parallel
+
+### Available MCP Prompts (NEW in v0.1.0)
+
+Prompts are workflow templates that guide coverage improvement, transforming brennpunkt from a data provider to a coverage improvement partner.
+
+| Prompt | Purpose | Key Arguments |
+|--------|---------|---------------|
+| `improve_coverage` | Complete workflow to reach target percentage | projectPath, targetPercentage, focusMetric |
+| `analyze_gaps` | Understand patterns in coverage gaps | projectPath, targetPercentage |
+| `quick_wins_workflow` | Find fast paths to improvement | projectPath, timeConstraint |
+| `coverage_review` | Detailed review with test suggestions | projectPath, filePattern |
+
+**Example Prompt Usage:**
+
+```
+Human: I need to get to 90% coverage
+
+AI: [invokes improve_coverage prompt with projectPath and targetPercentage=90]
+AI: I'll help you reach 90% coverage. Let me check your current state...
+AI: [calls brennpunkt_coverage_summary]
+AI: You're at 82%, need 8% improvement...
+AI: [calls brennpunkt_get_priorities]
+AI: Here are the top 3 files to test: ...
+```
+
 ### Setting Up MCP
 
 #### 1. Install Brennpunkt
