@@ -1,11 +1,12 @@
-.env 
+.env
 dist
 node_modules
 *.log
 .vscode
 coverage/
 test/
-/output/
+output/
 .DS_Store
 package-lock.json
 tsconfig.tsbuildinfo
+.kodrdriv*
