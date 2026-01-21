@@ -7,8 +7,10 @@
 
 import type { McpResource, McpResourceTemplate, McpResourceContents } from './types';
 import { parseUri, buildCoverageUri, buildFileUri, buildPrioritiesUri, buildConfigUri, buildQuickWinsUri } from './uri';
-import { loadProjectConfig, loadCoverage, getPriorities, generateSuggestedFocus, DEFAULT_WEIGHTS } from './server.js';
+import { loadProjectConfig, loadCoverage, generateSuggestedFocus, DEFAULT_WEIGHTS } from './tools/shared.js';
+import { getPriorities } from './tools/getPriorities.js';
 import { calculateOverallCoverage } from '../analyzer.js';
+import type { FileCoverage } from '../types.js';
 import { resolve } from 'node:path';
 import { existsSync } from 'node:fs';
 
@@ -96,7 +98,7 @@ async function readCoverageResource(projectPath: string): Promise<McpResourceCon
             branches: overall.branches.coverage,
             fileCount: overall.fileCount,
         },
-        files: files.map(f => ({
+        files: files.map((f: FileCoverage) => ({
             file: f.file,
             lines: {
                 hit: f.linesHit,
@@ -127,8 +129,8 @@ async function readFileResource(projectPath: string, filePath: string): Promise<
     const config = loadProjectConfig(projectPath);
     const files = loadCoverage(projectPath, config);
     
-    const file = files.find(f => 
-        f.file === filePath || 
+    const file = files.find((f: FileCoverage) =>
+        f.file === filePath ||
         f.file.endsWith(filePath) ||
         filePath.endsWith(f.file)
     );
@@ -250,8 +252,8 @@ async function readQuickWinsResource(projectPath: string, params: Record<string,
 
     // Find quick wins - small files with low coverage
     const quickWins = files
-        .filter(f => f.linesFound >= minLines && f.linesFound <= maxLines)
-        .map(f => {
+        .filter((f: FileCoverage) => f.linesFound >= minLines && f.linesFound <= maxLines)
+        .map((f: FileCoverage) => {
             const uncoveredLines = f.linesFound - f.linesHit;
             const potentialImpact = overall.lines.found > 0
                 ? (uncoveredLines / overall.lines.found) * 100
@@ -259,7 +261,7 @@ async function readQuickWinsResource(projectPath: string, params: Record<string,
             const currentCoverage = f.linesFound > 0
                 ? (f.linesHit / f.linesFound) * 100
                 : 100;
-            
+
             return {
                 file: f.file,
                 linesTotal: f.linesFound,
@@ -268,8 +270,8 @@ async function readQuickWinsResource(projectPath: string, params: Record<string,
                 potentialImpact: Math.round(potentialImpact * 100) / 100,
             };
         })
-        .filter(f => f.uncoveredLines > 0)
-        .sort((a, b) => b.potentialImpact - a.potentialImpact)
+        .filter((f: { uncoveredLines: number }) => f.uncoveredLines > 0)
+        .sort((a: { potentialImpact: number }, b: { potentialImpact: number }) => b.potentialImpact - a.potentialImpact)
         .slice(0, 10);
 
     const uri = buildQuickWinsUri(resolve(projectPath), maxLines);
