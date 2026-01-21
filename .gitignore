@@ -1,4 +1,4 @@
-.env 
+.env
 dist
 node_modules
 *.log
@@ -9,3 +9,4 @@ test/
 .DS_Store
 package-lock.json
 tsconfig.tsbuildinfo
+.kodrdriv*
