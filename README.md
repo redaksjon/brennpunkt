@@ -2,6 +2,8 @@
 
 **Coverage Priority Analyzer** — Parses `lcov.info` and ranks files by testing priority. Helps answer: *"Where should I focus testing efforts next?"*
 
+<!-- Test publish 2026-01-22 -->
+
 ## What is Brennpunkt?
 
 Brennpunkt is a command-line tool that analyzes test coverage reports and tells you **where to focus your testing efforts for maximum impact**. Instead of showing you raw percentages, it calculates a priority score for each file based on coverage gaps, file size, and configurable weights.
