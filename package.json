@@ -1,6 +1,6 @@
 {
   "name": "@redaksjon/brennpunkt",
-  "version": "0.1.2-dev.0",
+  "version": "0.1.2",
   "description": "Coverage priority analyzer - identify where to focus testing efforts",
   "main": "dist/index.js",
   "type": "module",
