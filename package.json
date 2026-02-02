@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/redaksjon/brennpunkt",
   "scripts": {
-    "build": "npm run lint && tsc --noEmit && vite build && chmod +x dist/main.js dist/mcp/server.js",
+    "build": "npm run lint && tsc --noEmit && vite build && node scripts/copy-assets.mjs && chmod +x dist/main.js dist/mcp/server.js",
     "dev": "vite",
     "watch": "vite build --watch",
     "test": "vitest run --coverage",
