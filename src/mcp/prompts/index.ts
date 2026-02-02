@@ -15,19 +15,34 @@ const __dirname = dirname(__filename);
 
 /**
  * Helper to resolve the prompts directory path
- * When bundled, the MCP server is at dist/mcp-server.js and prompts are at dist/mcp/prompts/
+ * When bundled, the MCP server is at dist/mcp/server.js and prompts are at dist/mcp/prompts/
  * When running from source, prompts are at src/mcp/prompts/
  */
 function getPromptsDir(): string {
-    // Check if we're running from a bundled file (dist/mcp-server.js)
-    // When bundled, __dirname will be the 'dist' directory
-    const isBundled = __dirname.includes('/dist') || __dirname.endsWith('dist') ||
-                      __filename.includes('dist/mcp-server.js') || __filename.includes('dist\\mcp-server.js');
+    // Check if we're running from a bundled file
+    // When bundled, server.js is at dist/mcp/server.js, so __dirname is dist/mcp
+    // Prompts are at dist/mcp/prompts/ (same directory level as server.js)
+    const isBundled = __dirname.includes('/dist') || __dirname.includes('\\dist') ||
+                      __filename.includes('dist/mcp/server.js') || __filename.includes('dist\\mcp\\server.js');
 
     if (isBundled) {
-        // When bundled, prompts are at dist/mcp/prompts/
-        const promptsDir = resolve(__dirname, 'mcp/prompts');
-        return promptsDir;
+        // Check if __dirname already ends with 'mcp' (most common case)
+        // This handles: dist/mcp, node_modules/.../dist/mcp, etc.
+        if (__dirname.endsWith('mcp') || __dirname.endsWith('mcp/') || __dirname.endsWith('mcp\\')) {
+            // Already in mcp directory, prompts are in prompts/ subdirectory
+            return resolve(__dirname, 'prompts');
+        }
+        // Check if __dirname contains /mcp/ or \mcp\ (handles nested paths)
+        if (__dirname.includes('/mcp/') || __dirname.includes('\\mcp\\')) {
+            // Extract path up to and including 'mcp', then add 'prompts'
+            const mcpIndex = Math.max(__dirname.lastIndexOf('/mcp/'), __dirname.lastIndexOf('\\mcp\\'));
+            if (mcpIndex !== -1) {
+                const basePath = __dirname.substring(0, mcpIndex + 4); // +4 for '/mcp'
+                return resolve(basePath, 'prompts');
+            }
+        }
+        // Fallback: assume we're in dist/mcp, resolve prompts from here
+        return resolve(__dirname, 'prompts');
     }
     // When running from source, prompts are in the same directory as this file
     return __dirname;
