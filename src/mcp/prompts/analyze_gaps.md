@@ -4,10 +4,21 @@
 
 Understand why test coverage is below ${targetPercentage}% and identify patterns in coverage gaps.
 
+## Determining the Project Path
+
+The projectPath parameter is: `${projectPath}`
+
+If this shows `[INFER_FROM_CONTEXT]`, determine the correct project path from:
+- Recent messages mentioning project paths
+- Workspace paths from user_info
+- Currently open files
+- Git repository information
+- Ask the user if unclear
+
 ## Analysis Plan
 
 1. **Get Current Coverage Summary**
-   - Run `brennpunkt_coverage_summary` with projectPath="${projectPath}"
+   - Run `brennpunkt_coverage_summary` with the determined projectPath
    - Review overall coverage percentages for lines, branches, and functions
    - Identify which metric (lines/branches/functions) is furthest from the target
 

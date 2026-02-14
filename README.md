@@ -500,10 +500,12 @@ Resources allow AI assistants to read coverage data directly without tool calls,
 
 | Prompt | Purpose | Key Arguments |
 |--------|---------|---------------|
-| `improve_coverage` | Complete workflow to reach target percentage | projectPath, targetPercentage, focusMetric |
-| `analyze_gaps` | Understand patterns in coverage gaps | projectPath, targetPercentage |
-| `quick_wins_workflow` | Find fast paths to improvement | projectPath, timeConstraint |
-| `coverage_review` | Detailed review with test suggestions | projectPath, filePattern |
+| `improve_coverage` | Complete workflow to reach target percentage | projectPath (optional), targetPercentage, focusMetric |
+| `analyze_gaps` | Understand patterns in coverage gaps | projectPath (optional), targetPercentage |
+| `quick_wins_workflow` | Find fast paths to improvement | projectPath (optional), timeConstraint |
+| `coverage_review` | Detailed review with test suggestions | projectPath (optional), filePattern |
+
+**Note:** All prompts now support optional `projectPath` parameter. If not provided, the AI will infer it from conversation context (workspace paths, open files, git repositories, etc.), making prompts more convenient to use.
 
 Prompts transform brennpunkt from a data provider to a coverage improvement partner, guiding you through actionable workflows instead of just showing numbers.
 

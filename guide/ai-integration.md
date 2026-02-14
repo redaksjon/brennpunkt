@@ -145,17 +145,20 @@ Prompts are workflow templates that guide coverage improvement, transforming bre
 
 | Prompt | Purpose | Key Arguments |
 |--------|---------|---------------|
-| `improve_coverage` | Complete workflow to reach target percentage | projectPath, targetPercentage, focusMetric |
-| `analyze_gaps` | Understand patterns in coverage gaps | projectPath, targetPercentage |
-| `quick_wins_workflow` | Find fast paths to improvement | projectPath, timeConstraint |
-| `coverage_review` | Detailed review with test suggestions | projectPath, filePattern |
+| `improve_coverage` | Complete workflow to reach target percentage | projectPath (optional), targetPercentage, focusMetric |
+| `analyze_gaps` | Understand patterns in coverage gaps | projectPath (optional), targetPercentage |
+| `quick_wins_workflow` | Find fast paths to improvement | projectPath (optional), timeConstraint |
+| `coverage_review` | Detailed review with test suggestions | projectPath (optional), filePattern |
+
+**Note on projectPath**: All prompts now support optional `projectPath` parameter. If not provided, the AI will infer it from conversation context (workspace paths, open files, git repositories, etc.). This makes prompts more convenient to use in practice.
 
 **Example Prompt Usage:**
 
 ```
 Human: I need to get to 90% coverage
 
-AI: [invokes improve_coverage prompt with projectPath and targetPercentage=90]
+AI: [invokes improve_coverage prompt with targetPercentage=90]
+AI: [infers projectPath from workspace context]
 AI: I'll help you reach 90% coverage. Let me check your current state...
 AI: [calls brennpunkt_coverage_summary]
 AI: You're at 82%, need 8% improvement...
