@@ -82,8 +82,8 @@ export function getPrompts(): McpPrompt[] {
             arguments: [
                 {
                     name: 'projectPath',
-                    description: 'Absolute path to the project',
-                    required: true,
+                    description: 'Absolute path to the project (optional - will be inferred from conversation context if not provided)',
+                    required: false,
                 },
                 {
                     name: 'targetPercentage',
@@ -104,8 +104,8 @@ export function getPrompts(): McpPrompt[] {
             arguments: [
                 {
                     name: 'projectPath',
-                    description: 'Absolute path to the project',
-                    required: true,
+                    description: 'Absolute path to the project (optional - will be inferred from conversation context if not provided)',
+                    required: false,
                 },
                 {
                     name: 'targetPercentage',
@@ -121,8 +121,8 @@ export function getPrompts(): McpPrompt[] {
             arguments: [
                 {
                     name: 'projectPath',
-                    description: 'Absolute path to the project',
-                    required: true,
+                    description: 'Absolute path to the project (optional - will be inferred from conversation context if not provided)',
+                    required: false,
                 },
                 {
                     name: 'timeConstraint',
@@ -138,8 +138,8 @@ export function getPrompts(): McpPrompt[] {
             arguments: [
                 {
                     name: 'projectPath',
-                    description: 'Absolute path to the project',
-                    required: true,
+                    description: 'Absolute path to the project (optional - will be inferred from conversation context if not provided)',
+                    required: false,
                 },
                 {
                     name: 'filePattern',
@@ -172,15 +172,19 @@ export async function getPrompt(
     if (name === 'improve_coverage') {
         if (!filledArgs.targetPercentage) filledArgs.targetPercentage = '90';
         if (!filledArgs.focusMetric) filledArgs.focusMetric = 'lines';
+        if (!filledArgs.projectPath) filledArgs.projectPath = '[INFER_FROM_CONTEXT]';
     }
-    if (name === 'analyze_gaps' && !filledArgs.targetPercentage) {
-        filledArgs.targetPercentage = '90';
+    if (name === 'analyze_gaps') {
+        if (!filledArgs.targetPercentage) filledArgs.targetPercentage = '90';
+        if (!filledArgs.projectPath) filledArgs.projectPath = '[INFER_FROM_CONTEXT]';
     }
-    if (name === 'quick_wins_workflow' && !filledArgs.timeConstraint) {
-        filledArgs.timeConstraint = 'moderate';
+    if (name === 'quick_wins_workflow') {
+        if (!filledArgs.timeConstraint) filledArgs.timeConstraint = 'moderate';
+        if (!filledArgs.projectPath) filledArgs.projectPath = '[INFER_FROM_CONTEXT]';
     }
-    if (name === 'coverage_review' && !filledArgs.filePattern) {
-        filledArgs.filePattern = 'highest priority files';
+    if (name === 'coverage_review') {
+        if (!filledArgs.filePattern) filledArgs.filePattern = 'highest priority files';
+        if (!filledArgs.projectPath) filledArgs.projectPath = '[INFER_FROM_CONTEXT]';
     }
 
     const content = fillTemplate(template, filledArgs);

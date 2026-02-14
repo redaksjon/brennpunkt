@@ -6,6 +6,17 @@ Find fast paths to improve test coverage by targeting small files with high impa
 
 Time constraint: ${timeConstraint}
 
+## Determining the Project Path
+
+The projectPath parameter is: `${projectPath}`
+
+If this shows `[INFER_FROM_CONTEXT]`, determine the correct project path from:
+- Recent messages mentioning project paths
+- Workspace paths from user_info
+- Currently open files
+- Git repository information
+- Ask the user if unclear
+
 ## Strategy
 
 1. **Identify Quick Wins**

@@ -4,10 +4,31 @@
 
 Improve test coverage for the project to reach ${targetPercentage}% ${focusMetric} coverage.
 
+## Determining the Project Path
+
+**IMPORTANT**: The projectPath parameter is: `${projectPath}`
+
+If this shows `[INFER_FROM_CONTEXT]`, you need to determine the correct project path from the conversation context:
+
+1. **Check recent messages** - Look for explicit project paths mentioned by the user
+2. **Check workspace paths** - Use the workspace paths from user_info (usually provided at the start)
+3. **Check open files** - Look at currently open files to identify the project root
+4. **Check git repositories** - Use git_status information to identify the project directory
+5. **Look for package.json** - The project root typically contains a package.json file
+6. **Ask if unclear** - If you cannot confidently determine the path, ask the user
+
+Common patterns:
+- User mentions a specific directory: `/Users/username/project`
+- User references a workspace: Use the workspace root from user_info
+- Files are open from a specific project: Use that project's root directory
+- Multiple projects in workspace: Ask which one to analyze
+
+Once you've determined the correct path, use it consistently in all tool calls below.
+
 ## Workflow Steps
 
 1. **Check Current Coverage**
-   - Run `brennpunkt_coverage_summary` with projectPath="${projectPath}"
+   - Run `brennpunkt_coverage_summary` with the determined projectPath
    - Review current coverage percentages (lines, branches, functions)
    - Identify the gap between current and target coverage
 

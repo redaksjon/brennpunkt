@@ -4,10 +4,21 @@
 
 Perform a detailed code review focused on coverage gaps for ${filePattern} in the project.
 
+## Determining the Project Path
+
+The projectPath parameter is: `${projectPath}`
+
+If this shows `[INFER_FROM_CONTEXT]`, determine the correct project path from:
+- Recent messages mentioning project paths
+- Workspace paths from user_info
+- Currently open files
+- Git repository information
+- Ask the user if unclear
+
 ## Review Process
 
 1. **Identify Files for Review**
-   - Run `brennpunkt_get_priorities` with projectPath="${projectPath}" to get the top priority files
+   - Run `brennpunkt_get_priorities` with the determined projectPath to get the top priority files
    - If a specific file pattern was provided (${filePattern}), focus on matching files
    - Rank files by their priority score (impact on overall coverage)
 
